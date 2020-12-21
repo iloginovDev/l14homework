@@ -34,9 +34,10 @@ resource "yandex_compute_instance" "vm-1" {
       type = "ssh"
       user = "ubuntu"
       agent = false
+      host = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
       private_key = "${file("/home/ubuntu/.ssh/id_rsa")}"
     }
-    
+
     inline = [
       "sudo apt update && sudo apt install -y nginx"    
     ]
