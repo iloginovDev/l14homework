@@ -9,7 +9,7 @@ resource "yandex_compute_instance" "vm-1" {
   name = "terraform1"
 
   resources {
-    cores  = 2
+    cores  = 4
     memory = 2
   }
 
