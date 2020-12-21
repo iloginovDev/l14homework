@@ -29,6 +29,19 @@ resource "yandex_compute_instance" "vm-1" {
     ssh-keys = "ubuntu:${file("/home/ubuntu/.ssh/id_rsa.pub")}"
   }
 
+  provisioner "file" {
+    source      = "./index.html"
+    destination = "/tmp/index.html"
+
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      host = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
+      private_key = "${file("/home/ubuntu/.ssh/id_rsa")}"
+    }
+  } 
+
   provisioner "remote-exec" {
     connection {
       type = "ssh"
@@ -40,22 +53,11 @@ resource "yandex_compute_instance" "vm-1" {
 
     inline = [
       "sudo apt update && sudo apt install -y nginx", 
-      "sudo rm -rf /var/www/html/*"    
+      "sudo rm -rf /var/www/html/*", 
+      "sudo cp /tmp/index.html /var/www/html/index.html"
     ]
   }
 
-  provisioner "file" {
-    source      = "./index.html"
-    destination = "/var/www/html/"
-
-    connection {
-      type = "ssh"
-      user = "ubuntu"
-      agent = false
-      host = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
-      private_key = "${file("/home/ubuntu/.ssh/id_rsa")}"
-    }
-  } 
 }
 
 resource "yandex_vpc_network" "network-1" {
