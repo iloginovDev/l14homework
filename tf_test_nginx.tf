@@ -45,7 +45,7 @@ resource "yandex_compute_instance" "vm-1" {
   }
 
   provisioner "file" {
-    source      = "/index.html"
+    source      = "./index.html"
     destination = "/var/www/html/"
 
     connection {
