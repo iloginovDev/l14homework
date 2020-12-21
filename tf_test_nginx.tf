@@ -39,9 +39,23 @@ resource "yandex_compute_instance" "vm-1" {
     }
 
     inline = [
-      "sudo apt update && sudo apt install -y nginx"    
+      "sudo apt update && sudo apt install -y nginx", 
+      "sudo rm -rf /var/www/html/*"    
     ]
   }
+
+  provisioner "file" {
+    source      = "/index.html"
+    destination = "/var/www/html/"
+
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      host = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
+      private_key = "${file("/home/ubuntu/.ssh/id_rsa")}"
+    }
+  } 
 }
 
 resource "yandex_vpc_network" "network-1" {
