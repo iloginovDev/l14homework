@@ -30,6 +30,13 @@ resource "yandex_compute_instance" "vm-1" {
   }
 
   provisioner "remote-exec" {
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      private_key = "${file("/home/ubuntu/.ssh/id_rsa")}"
+    }
+    
     inline = [
       "sudo apt update && sudo apt install -y nginx"    
     ]
